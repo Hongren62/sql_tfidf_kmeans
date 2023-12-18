@@ -26,7 +26,7 @@ text_data = [row[0] for row in data]
 mycursor.close()
 
 # 使用 TfidfVectorizer
-vectorizer = TfidfVectorizer(tokenizer=lambda x: x.split())
+vectorizer = TfidfVectorizer(tokenizer=lambda x: x.split(), token_pattern=None)
 tfidf_matrix = vectorizer.fit_transform(text_data)
 
 print("TF-IDF Matrix:")
