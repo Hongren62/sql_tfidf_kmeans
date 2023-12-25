@@ -15,7 +15,7 @@ db = mysql.connector.connect(
 mycursor = db.cursor()
 
 # tf-idf
-mycursor.execute("SELECT `Title (English)` FROM `f01l_patent-2023`")
+mycursor.execute("SELECT `Abstract (English)` FROM `f01l_patent-2023`")
 
 # 獲取所有資料
 data = mycursor.fetchall()
@@ -28,6 +28,7 @@ mycursor.close()
 # 使用 TfidfVectorizer
 vectorizer = TfidfVectorizer(tokenizer=lambda x: x.split(), token_pattern=None)
 tfidf_matrix = vectorizer.fit_transform(text_data)
+
 
 print("TF-IDF Matrix:")
 print(tfidf_matrix.toarray())
@@ -47,9 +48,9 @@ coordinates = pca.fit_transform(tfidf_matrix.toarray())
 # 繪製散點圖，根據 K-means 群集標籤上色
 plt.scatter(coordinates[:, 0], coordinates[:, 1], c=cluster_labels, cmap='viridis', s=50)
 
-# 繪製 K-means 中心點，用 "X" 標記
+# 繪製 K-means 中心點，用 "*" 標記
 centers = kmeans.cluster_centers_[:, :2]
-plt.scatter(centers[:, 0], centers[:, 1], marker='X', s=200, color='red')
+plt.scatter(centers[:, 0], centers[:, 1], marker='*', s=200, color='red')
 
 # 添加標籤和標題
 plt.xlabel('PCA Dimension 1')
