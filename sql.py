@@ -3,6 +3,10 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
+import jieba
+
+# 載入字典（可選）
+# jieba.load_userdict("your_custom_dictionary.txt")
 
 db = mysql.connector.connect(
     host="localhost",
@@ -14,24 +18,21 @@ db = mysql.connector.connect(
 
 mycursor = db.cursor()
 
-# tf-idf
+# 獲取 Abstract (English) 資料
 mycursor.execute("SELECT `Abstract (English)` FROM `f01l_patent-2023`")
-
-# 獲取所有資料
 data = mycursor.fetchall()
 
 # 將資料轉換為 list
 text_data = [row[0] for row in data]
 
+# 關鍵字提取
+keywords_data = [' '.join(jieba.analyse.extract_tags(text, topK=10, withWeight=False)) for text in text_data]
+
 mycursor.close()
 
 # 使用 TfidfVectorizer
 vectorizer = TfidfVectorizer(tokenizer=lambda x: x.split(), token_pattern=None)
-tfidf_matrix = vectorizer.fit_transform(text_data)
-
-
-print("TF-IDF Matrix:")
-print(tfidf_matrix.toarray())
+tfidf_matrix = vectorizer.fit_transform(keywords_data)
 
 # Kmeans
 n_clusters = 3
